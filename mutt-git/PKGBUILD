@@ -1,0 +1,36 @@
+pkgname=('mutt-git')
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="The Mutt E-Mail Client"
+arch=('i686' 'x86_64')
+url="http://www.tortall.net/projects/yasm/"
+license=('GPL2')
+options=('staticlibs')
+source=("$pkgname"::'git+https://github.com/karelzak/mutt-kz.git')
+md5sums=('SKIP')
+
+prepare() {
+    cd "$srcdir/mutt-git"
+    autoreconf -fi
+    autoconf
+}
+
+build() {
+    cd "$srcdir/mutt-git"
+    ./configure --prefix=/usr --with-homespool=~/spool
+    make
+}
+
+package() {
+    cd "$srcdir/mutt-git"
+    pwd
+
+    mkdir -p ${pkgdir}/usr/bin
+
+    make DESTDIR="${pkgdir}" install
+    #rm "${pkgdir}"/usr/bin/{flea,muttbug}
+    #rm "${pkgdir}"/usr/share/man/man1/{flea,muttbug}.1
+    #rm "${pkgdir}"/etc/mime.types{,.dist}
+    #install -Dm644 contrib/gpg.rc "${pkgdir}"/etc/Muttrc.gpg.dist
+}
+
